@@ -10,18 +10,10 @@ ENV_DIR=$3
 
 INIT_SCRIPT="$BUILD_DIR/.profile.d/logstash.sh"
 
-if [ -f "$ENV_DIR/BONSAI_URL" ]; then
-  ELASTICSEARCH_URL=$(cat $ENV_DIR/BONSAI_URL)
-elif [ -f "$ENV_DIR/ELASTICSEARCH_URL" ]; then
-  ELASTICSEARCH_URL=$(cat $ENV_DIR/ELASTICSEARCH_URL)
-else
-  ELASTICSEARCH_URL="http://localhost:9200"
-fi
-
 if [ -f "$ENV_DIR/DOWNLOAD_URL" ]; then
   DOWNLOAD_URL=$(cat $ENV_DIR/DOWNLOAD_URL)
 else
-  DOWNLOAD_URL="https://download.elastic.co/logstash/logstash/logstash-2.3.1.tar.gz"
+  DOWNLOAD_URL="https://artifacts.elastic.co/downloads/logstash/logstash-7.13.2-linux-x86_64.tar.gz"
 fi
 
 LOGSTASH_PACKAGE=${DOWNLOAD_URL##*/}
@@ -37,15 +29,14 @@ case ${LOGSTASH_PACKAGE} in
     ;;
 esac
 
-mkdir="mkdir -p"
 download="curl -sLO"
 extract="$tar -C $BUILD_DIR --wildcards -f"
 verify="sha512sum --check --warn"
 
 echo "-----> Installing Logstash..."
 
-$mkdir ${INIT_SCRIPT%/*}
-$mkdir $CACHE_DIR
+mkdir -p ${INIT_SCRIPT%/*}
+mkdir -p $CACHE_DIR
 CHECKSUM_URL="${DOWNLOAD_URL}.sha512"
 
 if [ ! -f "$CACHE_DIR/$LOGSTASH_PACKAGE" ]; then
