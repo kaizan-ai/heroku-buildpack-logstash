@@ -17,11 +17,11 @@ else
 fi
 
 LOGSTASH_PACKAGE=${DOWNLOAD_URL##*/}
+LOGSTASH_DIR="$BUILD_DIR/${LOGSTASH_PACKAGE%%.tar.gz}"
 
 case ${LOGSTASH_PACKAGE} in
   *.tar.gz)
-    LOGSTASH_DIR="$BUILD_DIR/${LOGSTASH_PACKAGE%%.tar.gz}"
-    mkdir $LOGSTASH_DIR
+    echo "Building to $LOGSTASH_DIR..."
     ;;
   *)
     echo "Only tar.gz is supported: $LOGSTASH_PACKAGE" | indent
@@ -30,9 +30,6 @@ case ${LOGSTASH_PACKAGE} in
 esac
 
 download="curl -sLO"
-extract="tar xz --strip-components=1 -C $LOGSTASH_DIR --wildcards -f"
-verify="sha512sum --check --warn"
-
 echo "-----> Installing Logstash..."
 
 mkdir -p ${INIT_SCRIPT%/*}
@@ -45,7 +42,7 @@ if [ ! -f "$CACHE_DIR/$LOGSTASH_PACKAGE" ]; then
 
   echo "verifying against ${CHECKSUM_URL}" | indent
   $download "${CHECKSUM_URL}"
-  $verify "${LOGSTASH_PACKAGE}.sha512"
+  sha512sum --check --warn "${LOGSTASH_PACKAGE}.sha512"
 
   if [ $? -eq 0 ]; then
     mv $LOGSTASH_PACKAGE $CACHE_DIR
@@ -54,7 +51,8 @@ if [ ! -f "$CACHE_DIR/$LOGSTASH_PACKAGE" ]; then
   fi
 fi
 
-$extract $CACHE_DIR/$LOGSTASH_PACKAGE
+mkdir $LOGSTASH_DIR
+tar xz --strip-components=1 -C $LOGSTASH_DIR --wildcards -f $CACHE_DIR/$LOGSTASH_PACKAGE
 
 cp ${BUILD_DIR}/jvm.options ${LOGSTASH_DIR##*/}/config/jvm.options
 
