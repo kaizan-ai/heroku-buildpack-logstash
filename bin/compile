@@ -30,7 +30,7 @@ case ${LOGSTASH_PACKAGE} in
 esac
 
 download="curl -sLO"
-extract="tar xz --strip-components -C $LOGSTASH_DIR --wildcards -f"
+extract="tar xz --strip-components=1 -C $LOGSTASH_DIR --wildcards -f"
 verify="sha512sum --check --warn"
 
 echo "-----> Installing Logstash..."
