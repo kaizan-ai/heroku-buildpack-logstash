@@ -61,9 +61,9 @@ ls ${BUILD_DIR}
 echo "logstash dir:"
 ls ${LOGSTASH_DIR##*/}
 
-if [ -f jvm.options ]; then
+if [ -f "${BUILD_DIR}/jvm.options" ]; then
     echo "Found jvm.options file. Applying it."
-    cp ./jvm.options ${LOGSTASH_DIR}/config/jvm.options
+    cp ${BUILD_DIR}/jvm.options ${LOGSTASH_DIR}/config/jvm.options
 else
     echo "no jvm.options found."
 fi
