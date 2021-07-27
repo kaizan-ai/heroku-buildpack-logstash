@@ -51,6 +51,7 @@ if [ ! -f "$CACHE_DIR/$LOGSTASH_PACKAGE" ]; then
   fi
 fi
 
+echo "Creating $LOGSTASH_DIR"
 mkdir $LOGSTASH_DIR
 tar xz --strip-components=1 -C $LOGSTASH_DIR --wildcards -f $CACHE_DIR/$LOGSTASH_PACKAGE
 
@@ -59,7 +60,15 @@ echo "build dir:"
 ls ${BUILD_DIR}
 echo "logstash dir:"
 ls ${LOGSTASH_DIR##*/}
-cp ${BUILD_DIR}/jvm.options ${LOGSTASH_DIR}/config/jvm.options
+
+if [ -f jvm.options ]; then
+    echo "Found jvm.options file. Applying it."
+    cp ./jvm.options ${LOGSTASH_DIR}/config/jvm.options
+else
+    echo "no jvm.options found."
+fi
+
+#cp ${BUILD_DIR}/jvm.options ${LOGSTASH_DIR}/config/jvm.options
 
 echo "Exporting PATH" | indent
 echo 'export PATH="$PATH:'${LOGSTASH_DIR##*/}'/bin"' > $INIT_SCRIPT
