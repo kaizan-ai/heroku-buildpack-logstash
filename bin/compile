@@ -55,11 +55,8 @@ echo "Creating $LOGSTASH_DIR"
 mkdir $LOGSTASH_DIR
 tar xz --strip-components=1 -C $LOGSTASH_DIR --wildcards -f $CACHE_DIR/$LOGSTASH_PACKAGE
 
-ls -lha
 echo "build dir:"
 ls ${BUILD_DIR}
-echo "logstash dir:"
-ls ${LOGSTASH_DIR##*/}
 
 if [ -f "${BUILD_DIR}/jvm.options" ]; then
     echo "Found jvm.options file. Applying it."
