@@ -13,7 +13,7 @@ INIT_SCRIPT="$BUILD_DIR/.profile.d/logstash.sh"
 if [ -f "$ENV_DIR/DOWNLOAD_URL" ]; then
   DOWNLOAD_URL=$(cat $ENV_DIR/DOWNLOAD_URL)
 else
-  DOWNLOAD_URL="https://artifacts.elastic.co/downloads/logstash/logstash-7.13.2-linux-x86_64.tar.gz"
+  DOWNLOAD_URL="https://artifacts.elastic.co/downloads/logstash/logstash-7.14.0-linux-x86_64.tar.gz"
 fi
 
 LOGSTASH_PACKAGE=${DOWNLOAD_URL##*/}
