@@ -62,7 +62,7 @@ if [ -f "${BUILD_DIR}/jvm.options" ]; then
     echo "Found jvm.options file. Applying it."
     cp ${BUILD_DIR}/jvm.options ${LOGSTASH_DIR}/config/jvm.options
 else
-    echo "no jvm.options found."
+    echo "No jvm.options found, using defaults."
 fi
 
 #cp ${BUILD_DIR}/jvm.options ${LOGSTASH_DIR}/config/jvm.options
