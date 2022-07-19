@@ -16,6 +16,18 @@ else
   DOWNLOAD_URL="https://artifacts.elastic.co/downloads/logstash/logstash-7.14.0-linux-x86_64.tar.gz"
 fi
 
+if [ -f "$ENV_DIR/LOGSTASH_JVM_OPTIONS_PATH" ]; then
+  LOGSTASH_JVM_OPTIONS_PATH=$(cat $ENV_DIR/LOGSTASH_JVM_OPTIONS_PATH)
+else
+  LOGSTASH_JVM_OPTIONS_PATH="jvm.options"
+fi
+
+if [ -f "$ENV_DIR/LOGSTASH_PIPELINES_YAML_PATH" ]; then
+  LOGSTASH_PIPELINES_YAML_PATH=$(cat $ENV_DIR/LOGSTASH_PIPELINES_YAML_PATH)
+else
+  LOGSTASH_PIPELINES_YAML_PATH="pipelines.yml"
+fi
+
 LOGSTASH_PACKAGE=${DOWNLOAD_URL##*/}
 LOGSTASH_DIR="$BUILD_DIR/${LOGSTASH_PACKAGE%%.tar.gz}"
 
@@ -58,11 +70,19 @@ tar xz --strip-components=1 -C $LOGSTASH_DIR --wildcards -f $CACHE_DIR/$LOGSTASH
 echo "build dir:"
 ls ${BUILD_DIR}
 
-if [ -f "${BUILD_DIR}/jvm.options" ]; then
-    echo "Found jvm.options file. Applying it."
-    cp ${BUILD_DIR}/jvm.options ${LOGSTASH_DIR}/config/jvm.options
+if [ -f "${BUILD_DIR}/${LOGSTASH_JVM_OPTIONS_PATH}" ]; then
+    echo "Found ${LOGSTASH_JVM_OPTIONS_PATH} file. Applying it as jvm.options."
+    cp ${BUILD_DIR}/${LOGSTASH_JVM_OPTIONS_PATH} ${LOGSTASH_DIR}/config/jvm.options
 else
     echo "No jvm.options found, using defaults."
+fi
+
+echo "${BUILD_DIR}/${LOGSTASH_PIPELINES_YAML_PATH}"
+if [ -f "${BUILD_DIR}/${LOGSTASH_PIPELINES_YAML_PATH}" ]; then
+    echo "Found ${LOGSTASH_PIPELINES_YAML_PATH} file. Applying it as pipelines.yml."
+    cp ${BUILD_DIR}/${LOGSTASH_PIPELINES_YAML_PATH} ${LOGSTASH_DIR}/config/pipelines.yml
+else
+    echo "No pipelines.yml found, using defaults."
 fi
 
 #cp ${BUILD_DIR}/jvm.options ${LOGSTASH_DIR}/config/jvm.options
